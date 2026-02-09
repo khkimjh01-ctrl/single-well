@@ -37,6 +37,53 @@ npx serve .
    - Framework Preset: **Other**, Root Directory: `.` 그대로
    - Deploy 후 생성된 URL로 접속
 
+## GitHub에서 수정 후 Vercel 다시 배포하기
+
+Vercel을 GitHub 저장소와 연결해 두면 **main 브랜치에 푸시할 때마다 자동으로 다시 배포**됩니다.
+
+### 1) 로컬에서 수정하고 GitHub에 반영
+
+```bash
+# 프로젝트 폴더로 이동
+cd c:\Users\khkim\Documents\Cursor\single-well
+
+# 변경된 파일 확인
+git status
+
+# 변경 사항 스테이징
+git add .
+
+# 커밋 (메시지는 수정 내용에 맞게)
+git commit -m "그래프 눈금 및 색상 수정"
+
+# GitHub로 푸시 (자동 재배포 트리거)
+git push origin main
+```
+
+### 2) GitHub 웹에서 직접 수정하는 경우
+
+1. [github.com](https://github.com) → 해당 저장소(`single-well`) 열기  
+2. 수정할 파일 클릭 → 연필 아이콘 **Edit**  
+3. 내용 수정 후 아래 **Commit changes** → **Commit directly to the main branch** → **Commit**  
+4. 저장소를 Vercel에 연결해 두었다면 **몇 분 안에 자동으로 재배포**됨  
+
+### 3) Vercel에서 배포 상태 확인
+
+1. [vercel.com](https://vercel.com) 로그인 → 대시보드  
+2. **single-well** 프로젝트 클릭  
+3. **Deployments** 탭에서 최신 배포 상태 확인 (Building → Ready)  
+4. **Visit** 또는 프로젝트 URL로 사이트 접속해 변경 사항 확인  
+
+### 요약
+
+| 하는 일 | 결과 |
+|--------|------|
+| 로컬에서 `git push origin main` | GitHub에 반영 + Vercel 자동 재배포 |
+| GitHub 웹에서 파일 수정 후 Commit | GitHub에 반영 + Vercel 자동 재배포 |
+| Vercel 대시보드 → Deployments | 배포 로그·상태 확인 |
+
+처음 한 번만 Vercel에서 **GitHub 저장소 연결**을 해 두면, 이후에는 **코드를 GitHub에 올리는 것만으로** 다시 배포됩니다.
+
 ## 기술
 
 - Vanilla HTML/CSS/JS (ES modules)

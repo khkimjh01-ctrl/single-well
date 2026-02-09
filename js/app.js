@@ -76,10 +76,10 @@ function run() {
   ctx.lineTo(MARGIN.left + PLOT_WIDTH, yWell);
   ctx.stroke();
 
-  // Energy levels (horizontal lines)
-  const colors = ['#f59e0b', '#22c55e', '#ec4899', '#8b5cf6', '#06b6d4'];
-  states.forEach((s, i) => {
-    ctx.strokeStyle = colors[i % colors.length];
+  // Energy levels (horizontal lines) - blue
+  const energyLevelColor = '#3b82f6';
+  states.forEach((s) => {
+    ctx.strokeStyle = energyLevelColor;
     ctx.lineWidth = 1.5;
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
@@ -89,11 +89,11 @@ function run() {
     ctx.setLineDash([]);
   });
 
-  // Wave functions (offset by energy)
-  states.forEach((s, i) => {
+  // Wave functions (offset by energy) - yellow
+  const waveFunctionColor = '#eab308';
+  states.forEach((s) => {
     const pts = sampleWaveFunction(s.E, s.parity, V0_eV, L_ang, xMin, xMax, 500);
-    const color = colors[i % colors.length];
-    ctx.strokeStyle = color;
+    ctx.strokeStyle = waveFunctionColor;
     ctx.lineWidth = 2;
     ctx.beginPath();
     let first = true;
@@ -109,7 +109,7 @@ function run() {
     ctx.stroke();
   });
 
-  // Axes and labels
+  // Axes
   ctx.strokeStyle = 'rgba(255,255,255,0.35)';
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -119,19 +119,47 @@ function run() {
   ctx.stroke();
 
   ctx.fillStyle = '#a1a1aa';
-  ctx.font = '12px sans-serif';
+  ctx.font = '11px sans-serif';
+
+  // X-axis: tick marks at barrier positions (-L/2, 0, L/2) and range ends
+  const xTicks = [-half, 0, half];
+  if (xMin < -half - 5) xTicks.unshift(Math.round(xMin / 10) * 10);
+  if (xMax > half + 5) xTicks.push(Math.round(xMax / 10) * 10);
+  xTicks.sort((a, b) => a - b);
+  const tickLen = 6;
   ctx.textAlign = 'center';
-  ctx.fillText('x (Å)', MARGIN.left + PLOT_WIDTH / 2, canvas.height - 8);
+  ctx.textBaseline = 'top';
+  for (const x of xTicks) {
+    const px = toX(x);
+    if (px < MARGIN.left || px > MARGIN.left + PLOT_WIDTH) continue;
+    ctx.beginPath();
+    ctx.moveTo(px, MARGIN.top + PLOT_HEIGHT);
+    ctx.lineTo(px, MARGIN.top + PLOT_HEIGHT + tickLen);
+    ctx.stroke();
+    const label = x === -half ? `−L/2 (${-half})` : x === half ? `L/2 (${half})` : String(x);
+    ctx.fillText(label + (x === -half || x === half ? ' Å' : ''), px, MARGIN.top + PLOT_HEIGHT + tickLen + 2);
+  }
+  ctx.fillText('x (Å)', MARGIN.left + PLOT_WIDTH / 2, canvas.height - 6);
+
+  // Y-axis: tick marks at 0 and well depth (V0)
+  const yTicks = [0, V0_eV];
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (const e of yTicks) {
+    const py = toY(e);
+    ctx.beginPath();
+    ctx.moveTo(MARGIN.left - tickLen, py);
+    ctx.lineTo(MARGIN.left, py);
+    ctx.stroke();
+    const label = e === 0 ? '0' : `V₀ (${V0_eV.toFixed(2)})`;
+    ctx.fillText(label + (e === V0_eV ? ' eV' : ''), MARGIN.left - tickLen - 4, py);
+  }
   ctx.save();
   ctx.translate(14, MARGIN.top + PLOT_HEIGHT / 2);
   ctx.rotate(-Math.PI / 2);
   ctx.textAlign = 'center';
   ctx.fillText('에너지 (eV)', 0, 0);
   ctx.restore();
-
-  ctx.textAlign = 'right';
-  ctx.fillText('0', MARGIN.left - 8, toY(0) + 4);
-  ctx.fillText(V0_eV.toFixed(2), MARGIN.left - 8, toY(V0_eV) + 4);
 
   // Energy levels list
   if (states.length === 0) {

@@ -139,15 +139,15 @@ button#run:active {
 
 .swatch.potential {
   background: #3b82f6;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .swatch.energy {
-  background: #f59e0b;
+  background: #3b82f6;
 }
 
 .swatch.wave {
-  background: #22c55e;
+  background: #eab308;
 }
 
 .info h2 {
