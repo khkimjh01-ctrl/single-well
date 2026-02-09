@@ -1,0 +1,6 @@
+{
+  "name": "single-quantum-well",
+  "version": "1.0.0",
+  "description": "Single quantum well simulator - energy levels and wave functions",
+  "private": true
+}
